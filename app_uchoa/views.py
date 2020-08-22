@@ -11,7 +11,7 @@ def home(request):
             area = Area.objects.all()
             context['areas'] = area
             return render(request, 'app_uchoa/home.html', context)
-        elif reques.method=='POST':
+        elif request.method=='POST':
             pass
     else:
         return redirect(login)
@@ -21,3 +21,7 @@ def cliente(request):
         return HttpResponse('<h1>aqui sera a pagina de cliente</h1>')
 def login(request):
     return HttpResponse('aqui sera a pagina de login')
+
+def cliente(request):
+    if request.method=="GET":
+        return HttpResponse('<h1>aqui sera a pagina de cliente</h1>')

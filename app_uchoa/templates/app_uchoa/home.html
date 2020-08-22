@@ -1,10 +1,16 @@
 {% extends 'app_uchoa/base.html' %}
-{% block content %}
-<ul>
-{% for area in areas %}
-<li>
-    {{area}}
-</li>
-{% endfor %}
-</ul>
+{% load static %}
+{% block content %} 
+<div class='sidenav'>
+    <ul>
+        {% for area in areas %}
+        <li>
+            {{area}}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="main">
+    <h1>qualquer coisa</h1>
+</div>
 {% endblock %}   
