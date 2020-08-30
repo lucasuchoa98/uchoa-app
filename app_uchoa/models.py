@@ -7,6 +7,16 @@ tipo_de_emprestimo = (
     ('qu','Quinzenal'),
     ('me','Mensal')
 )
+class Area(models.Model):
+    codigo = models.IntegerField(unique=True)
+    descricao = models.CharField(max_length=50, default='')
+
+
+    def __str__(self):
+        return "{}".format(self.codigo)
+
+
+
 class Cliente(models.Model):
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     nome =  models.CharField(max_length=200,  blank=True, null=True)
@@ -16,20 +26,16 @@ class Cliente(models.Model):
     detalhe = models.CharField(max_length=150,default='')
     doc_file = models.FileField(upload_to=settings.MEDIA_ROOT, null=True, blank=True)
 
+
     def __str__(self):
         return self.nome
 
     class Meta:
         ordering = ['created']
 
-
-class Area(models.Model):
-    codigo = models.IntegerField(unique=True)
-    descricao = models.CharField(max_length=50, default='')
-
-
-    def __str__(self):
-        return "{}".format(self.codigo)
+class ClienteArea(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
 class Cobrador(models.Model):
     nome =  models.CharField(max_length=200, default='')
@@ -56,7 +62,3 @@ class Parcela(models.Model):
 class ValeRua(models.Model):
     vale_vale = models.DecimalField(max_digits=10, decimal_places=2)
     cobrador = models.ForeignKey(Cobrador, on_delete=models.CASCADE)
-
-
-
-    
