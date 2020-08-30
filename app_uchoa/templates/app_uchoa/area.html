@@ -32,13 +32,15 @@
             <div class="small-box bg-warning">
               <div class="inner">
                 <h3>Cliente</h3>
-
-                <p>Cliente</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>
               </div>
-              <a href="#" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
+              <form action="" method="POST">
+                {% csrf_token %}
+                <input type='hidden' value={{area.codigo}}  name="codigo">
+                <button type="submit" class="btn btn-block btn-warning" >Filtrar<i class="fas fa-arrow-circle-right"></i></button>
+              </form>
             </div>
           </div>
         </div>

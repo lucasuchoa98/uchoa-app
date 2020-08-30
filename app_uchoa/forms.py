@@ -4,7 +4,8 @@ from .models import Cliente, Cobrador, Emprestimo, ValeRua, Area, Parcela
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ['nome', 'cpf','codigo','fone','detalhe','doc_file']
+        fields = ['nome', 'cpf','codigo','fone','detalhe','doc_file', 'area']
+        labels = {'doc_file':'Arquivo'}
 
 class CobradorForm(forms.ModelForm):
     class Meta:
@@ -19,7 +20,8 @@ class ValeRuaForm(forms.ModelForm):
 class EmpretimoForm(forms.ModelForm):
     class Meta:
         model = Emprestimo
-        fields = ['tipo_emprestimo','falta','cliente','valor_pago','cobrador','valor_emprestimo']
+        fields = ['tipo_emprestimo','valor_emprestimo','date_start']
+        labels = {'date_start':'Data inicial'}
 
 class AreaForm(forms.ModelForm):
     class Meta:

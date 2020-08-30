@@ -7,13 +7,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Home</h1>
+            <h1 class="m-0 text-dark">Clientes</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item"><a href="#">Area</a></li>
-              <li class="breadcrumb-item active">{{areas.codigo}}</li>
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+              <li class="breadcrumb-item active">Clientes</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -27,11 +26,11 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Responsive Hover Table</h3>
+          <h3 class="card-title">Todos os clientes</h3>
 
           <div class="card-tools">
             <div class="input-group input-group-sm" style="width: 150px;">
-              <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+              <input type="text" name="table_search" class="form-control float-right" placeholder="Procurar">
 
               <div class="input-group-append">
                 <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
@@ -46,7 +45,7 @@
               <tr>
                 <th>Nome</th>
                 <th>Código</th>
-                <th>Detalhe</th>
+                <th>Descrição</th>
               </tr>
             </thead>
             {% for cli in clientes %}
@@ -59,6 +58,26 @@
             {% endfor %}
             </tbody>
           </table>
+          </div>
+        <div class="card card-primary collapsed-card">
+        <div class="card-header">
+          <h3 class="card-title">Novo Cliente</h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+            </button>
+          </div>
+          <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <form action="" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <input type="submit" value="Salvar">
+           </form>
+      </div>
+      <!-- /.card -->
         </div>
         <!-- /.card-body -->
       </div>

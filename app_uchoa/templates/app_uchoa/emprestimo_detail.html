@@ -7,13 +7,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Home</h1>
+            <h1 class="m-0 text-dark">Emprestimo</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item"><a href="#">Area</a></li>
-              <li class="breadcrumb-item active">Emprestimos</li>
+              <li class="breadcrumb-item"><a href="{% url 'home'%}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'emprestimo'%}">Emprestimos</a></li>
+              <li class="breadcrumb-item active">{{emprestimos.pk}}</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -22,16 +22,25 @@
     <!-- /.content-header -->
 
     <!-- Main content -->
-
-<div class="row">
+    <div class="card">
+      <div class="card-body"> 
+        <h3>Detalhes do Emprestimo</h3>
+        <p class="card-text">Cliente: {{emprestimos.cliente_name}}</p>
+        <p class="card-text">  Tipo de emprestimo: {{emprestimos.tipo_emprestimo}}</p>
+        <p class="card-text">  Valor do Emprestimo: {{emprestimos.valor_emprestimo}}</p>
+        <p class="card-text">  Valor Pago: {{emprestimos.valor_pago}}</p>
+        <p class="card-text">  Restante: {{resto}}</p>
+      </div>
+    </div>
+    <div class="row">
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Emprestimos</h3>
+          <h3>Parcelas</h3>
 
           <div class="card-tools">
             <div class="input-group input-group-sm" style="width: 150px;">
-              <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+              <input type="text" name="table_search" class="form-control float-right" placeholder="Procurar">
 
               <div class="input-group-append">
                 <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>

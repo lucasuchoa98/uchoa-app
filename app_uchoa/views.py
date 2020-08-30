@@ -13,7 +13,7 @@ from .forms import ClienteForm, EmpretimoForm, ValeRuaForm, AreaForm, CobradorFo
 from django.db import transaction
 from django.http import JsonResponse
 
-from .models import Area, Cliente, Cobrador, Emprestimo, Parcela, ValeRua, ClienteArea
+from .models import Area, Cliente, Cobrador, Emprestimo, Parcela, ValeRua
 
 import time
 
@@ -38,17 +38,29 @@ def home(request):
 def cliente(request, *args, **kwargs):
     context = {}
     if request.method=="GET":
-        cliente = Cliente.objects.all()
-        serializer = ClienteSerializer(cliente, many=True)
-        context['clientes'] = serializer.data
-        print(**kwargs)
-        print(serializer.data)
-        return Response(context, template_name='app_uchoa/cliente.html')
-        #return render(request,  'app_uchoa/cliente.html', context)
+        form = ClienteForm()
+        print(request.GET)
+        if request.GET.get('codigo'):
+            cli = Cliente.objects.filter(area=area)
+        else:
+            cli = Cliente.objects.all()
+        serializer = ClienteSerializer(cli, many=True)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+        context['clientes'] = serializer.data
+        context['form'] = form
+    if request.method=='POST':
+        form = ClienteForm(request.data)
+        if form.is_valid():
+            form.save()
+            return redirect(cliente)
+
+    return render(request,  'app_uchoa/cliente.html', context)
+
+@api_view(['GET', 'PUT', 'DELETE', 'POST'])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def clientedetail(request, id, *args, **kwargs):
+    print('arg',*args)
+    print('kwarg',**kwargs)
     try:
         cli = Cliente.objects.get(id=id)
         context = {}
@@ -59,13 +71,25 @@ def clientedetail(request, id, *args, **kwargs):
         serializer = ClienteSerializer(cli)
         emp_query = Emprestimo.objects.filter(cliente=cli)
         serializer_emp = EmprestimoSerializer(emp_query, many=True)
+        form = EmpretimoForm()
 
         context['emprestimos'] = serializer_emp.data
         context['clientes'] = serializer.data
+        context['form'] = form
 
         print('\n',serializer_emp.data)
         
         return Response(context, template_name='app_uchoa/cliente_detail.html')
+    
+    if request.method == 'POST':
+        form = EmpretimoForm(request.data)
+        if form.is_valid():
+            emprestimo = form.save(commit=False)
+            emprestimo.cliente = Cliente.objects.get(id=id)
+            emprestimo.valor_pago = 0.0
+            emprestimo.falta = False
+            emprestimo.save()
+            return redirect(clientedetail, id)
 
     elif request.method == 'PUT':
         serializer = ClienteSerializer(cli, data=request.data)
@@ -81,17 +105,31 @@ def clientedetail(request, id, *args, **kwargs):
 def login(request):
     return HttpResponse('aqui sera a pagina de login')
 
+@api_view(['GET' ,'POST'])
 def area(request,codigo):
     context = {}
-    if request.method=="GET":
+    try:
         area = Area.objects.get(codigo=codigo)
-        relation = ClienteArea.objects.filter(area=area)
+    except:
+        return redirect(home)
+    if request.method=="GET":
 
-        area_serializer = AreaSerializer(area)
+        serializer = AreaSerializer(area)
 
-        context['area'] = area_serializer.data
+        context['area'] = serializer.data
 
         return render(request,  'app_uchoa/area.html', context)
+
+    if request.method=="POST":
+        form = request.POST.get('codigo')
+        context['codigo'] = form
+        form = ClienteForm()
+        cli = Cliente.objects.filter(area=area)
+        serializer = ClienteSerializer(cli, many=True)
+
+        context['clientes'] = serializer.data
+        context['form'] = form
+        return render(request, 'app_uchoa/cliente.html',context)
 
 def emprestimo(request):
     context = {}
@@ -102,8 +140,7 @@ def emprestimo(request):
         print(serializer.data)
         return render(request,  'app_uchoa/emprestimos.html', context)
 
-@api_view(['GET', 'PUT', 'DELETE'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
+@api_view(['GET', 'PUT', 'POST'])
 def emprestimodetail(request,pk):
     try:
         emp = Emprestimo.objects.get(pk=pk)
@@ -117,12 +154,22 @@ def emprestimodetail(request,pk):
         par_serializer = ParcelaSerializer(parcelas, many=True)
         form = ParcelaForm()
 
+
         context['emprestimos'] = serializer.data
         context['parcelas'] = par_serializer.data
-        context['form'] = form
 
-        print(par_serializer.data)
-        return Response(context, template_name='app_uchoa/emprestimo_detail.html')
+        resto = float(serializer.data['valor_emprestimo']) - float(serializer.data['valor_pago']) 
+        context['resto'] = resto
+        context['form'] = form
+        return render(request, 'app_uchoa/emprestimo_detail.html', context)
+    
+    if request.method=='POST':
+        form = ParcelaForm(request.data)
+        if form.is_valid:
+            parcela = form.save(commit=False)
+            parcela.emprestimo = Emprestimo.objects.get(pk=pk)
+            form.save()
+            return redirect(emprestimodetail, pk)
 
 @api_view(['GET', 'POST'])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
