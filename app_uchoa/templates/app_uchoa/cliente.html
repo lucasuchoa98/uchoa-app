@@ -59,7 +59,25 @@
             </tbody>
           </table>
           </div>
-        <div class="card card-primary collapsed-card">
+        
+        <div class="pagination">
+          <span class="step-links">
+              {% if clientes.has_previous %}
+
+                  <a href="?page={{ clientes.previous_page_number }}">Anterior</a>
+              {% endif %}
+
+              <span class="current">
+                  Página {{ clientes.number }} de {{ clientes.paginator.num_pages }}.
+              </span>
+
+              {% if clientes.has_next %}
+                  <a href="?page={{ clientes.next_page_number }}">proxima</a>
+              {% endif %}
+          </span>
+      </div>
+  </div>
+  <div class="card card-primary collapsed-card">
         <div class="card-header">
           <h3 class="card-title">Novo Cliente</h3>
 
@@ -70,6 +88,7 @@
           <!-- /.card-tools -->
         </div>
         <!-- /.card-header -->
+        {% if request.user.is_staff %}
         <div class="card-body">
           <form action="" method="POST">
             {% csrf_token %}
@@ -77,12 +96,15 @@
             <input type="submit" value="Salvar">
            </form>
       </div>
+       {% endif %} 
       <!-- /.card -->
-        </div>
+      </div>
         <!-- /.card-body -->
       </div>
+      
+
       <!-- /.card -->
     </div>
-  </div>
+
 </div>
 {% endblock %}   

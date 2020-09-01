@@ -6,7 +6,8 @@ class ClienteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cliente
-        fields = ['id','created','nome','cpf','codigo','fone','detalhe','doc_file','cliente']
+        fields = ['id','created','nome','cpf','codigo','fone','detalhe','cliente']
+
 
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:

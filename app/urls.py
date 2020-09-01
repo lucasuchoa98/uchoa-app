@@ -9,3 +9,7 @@ urlpatterns = [
     path('', include('app_uchoa.urls')),
     path('ap1/v1', include('rest_framework.urls')),
 ]
+
+urlpatterns += [
+    path('accounts/', include('django.contrib.auth.urls')),
+]

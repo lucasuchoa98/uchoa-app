@@ -7,47 +7,62 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .forms import ClienteForm, EmpretimoForm, ValeRuaForm, AreaForm, CobradorForm, ParcelaForm
 
 from django.db import transaction
 from django.http import JsonResponse
 
-from .models import Area, Cliente, Cobrador, Emprestimo, Parcela, ValeRua
+from .models import Area, Cliente, Cobrador, Emprestimo, Parcela, ValeRua, Profile
 
 import time
 
-
+@login_required
 @api_view(['GET', 'POST'])
 def home(request):
     context = {}
-    if request.user.is_authenticated:
-        if request.method=='GET':
-            area = Area.objects.all()
-            serializer = AreaSerializer(area, many=True)
-            context['areas'] = serializer.data
-            return render(request, 'app_uchoa/home.html', context)
+    if request.method=='GET':
+        usuario = Profile.objects.get(user=request.user)
+        role = usuario.role
+        area = Area.objects.all()
+        serializer = AreaSerializer(area, many=True)
+        context['role'] = role
+        context['areas'] = serializer.data
+        return render(request, 'app_uchoa/home.html', context)
 
-        elif request.method=='POST':
-            pass
-    else:
-        return redirect(login)
+    elif request.method=='POST':
+        pass
 
+@login_required
 @api_view(['GET', 'POST'])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def cliente(request, *args, **kwargs):
     context = {}
     if request.method=="GET":
         form = ClienteForm()
-        print(request.GET)
-        if request.GET.get('codigo'):
-            cli = Cliente.objects.filter(area=area)
-        else:
-            cli = Cliente.objects.all()
-        serializer = ClienteSerializer(cli, many=True)
+        cli = Cliente.objects.all()
+        paginator = Paginator(cli, 10)
 
-        context['clientes'] = serializer.data
+        page = request.GET.get('page')
+        try:
+            clientes = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            clientes = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            clientes = paginator.page(paginator.num_pages)
+
+
+        serializer = ClienteSerializer(cli, many=True)
+        
+
+        context['clientes'] = clientes
+
         context['form'] = form
+        
     if request.method=='POST':
         form = ClienteForm(request.data)
         if form.is_valid():
@@ -56,6 +71,7 @@ def cliente(request, *args, **kwargs):
 
     return render(request,  'app_uchoa/cliente.html', context)
 
+@login_required
 @api_view(['GET', 'PUT', 'DELETE', 'POST'])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def clientedetail(request, id, *args, **kwargs):
@@ -105,6 +121,7 @@ def clientedetail(request, id, *args, **kwargs):
 def login(request):
     return HttpResponse('aqui sera a pagina de login')
 
+@login_required
 @api_view(['GET' ,'POST'])
 def area(request,codigo):
     context = {}
@@ -118,7 +135,7 @@ def area(request,codigo):
 
         context['area'] = serializer.data
 
-        return render(request,  'app_uchoa/area.html', context)
+        return render(request, 'app_uchoa/area.html', context)
 
     if request.method=="POST":
         form = request.POST.get('codigo')
@@ -130,7 +147,8 @@ def area(request,codigo):
         context['clientes'] = serializer.data
         context['form'] = form
         return render(request, 'app_uchoa/cliente.html',context)
-
+        
+@login_required
 def emprestimo(request):
     context = {}
     if request.method=="GET":
@@ -140,6 +158,7 @@ def emprestimo(request):
         print(serializer.data)
         return render(request,  'app_uchoa/emprestimos.html', context)
 
+@login_required
 @api_view(['GET', 'PUT', 'POST'])
 def emprestimodetail(request,pk):
     try:
@@ -170,48 +189,6 @@ def emprestimodetail(request,pk):
             parcela.emprestimo = Emprestimo.objects.get(pk=pk)
             form.save()
             return redirect(emprestimodetail, pk)
-
-@api_view(['GET', 'POST'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def cad_cliente(request):
-    form = ClienteForm()
-    context = {'form':form}
-
-    return render(request, 'app_uchoa/cad_cliente.html', context)
-
-@api_view(['GET', 'POST'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def cad_emprestimo(request):
-    form = EmprestimoForm()
-    context = {'form':form}
-
-    return render(request, 'app_uchoa/cad_emprestimohtml', context)
-
-@api_view(['GET', 'POST'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def cad_area(request):
-    form = AreaForm()
-    context = {'form':form}
-
-    return render(request, 'app_uchoa/cad_area.html', context)
-
-@api_view(['GET', 'POST'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def cad_cobrador(request):
-    form = CobradorForm()
-    context = {'form':form}
-
-    return render(request, 'app_uchoa/cad_cobrador.html', context)
-
-@api_view(['GET', 'POST', 'DELETE'])
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
-def cad_valerua(request):
-    form = ValeRuaForm()
-    context = {'form':form}
-
-    return render(request, 'app_uchoa/cad_valerua.html', context)
-
-
 
 class AreaViewSet(viewsets.ModelViewSet):
     queryset = Area.objects.all()

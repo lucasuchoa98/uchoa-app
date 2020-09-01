@@ -65,29 +65,59 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
+      
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-header">ÁREAS</li>
-          <li class="nav-item">
-            <a href="{% url 'area' 1%}" class="nav-link">
-              <i class="fas fa-circle nav-icon"></i>
-              <p>Área 1</p>
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link active">
+              <p>
+                Áreas
+                <i class="right fas fa-angle-left"></i>
+              </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'area' 1 %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Área 1</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'area' 2 %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Área 2</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'area' 3 %}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Área 3</p>
+                </a>
+              </li>
+            </ul>
           </li>
           <li class="nav-item">
-            <a href="{% url 'area' 2%}"  class="nav-link">
-              <i class="fas fa-circle nav-icon"></i>
-              <p>Área 2</p>
+            <a href="{%url 'cliente'%}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Clientes
+              </p>
             </a>
           </li>
+          {% if user.is_authenticated %}
           <li class="nav-item">
-            <a href="{% url 'area' 3%}"  class="nav-link">
-              <i class="fas fa-circle nav-icon"></i>
-              <p>Área 3</p>
+              <a href="{% url 'logout' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>
+              Sair
+              </p>
+              </a>
             </a>
           </li>
-        </ul>
+          {% endif %}
+      </ul>
+
       </nav>
       <!-- /.sidebar-menu -->
     </div>
@@ -109,7 +139,7 @@
   <footer class="main-footer">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
-      Anything you want
+      Deus é fiel
     </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; 2020 <a href="https://https://github.com/lucasuchoa98">lucasuchoa</a>.</strong> All rights reserved.
@@ -125,5 +155,10 @@
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+
+<!-- OPTIONAL SCRIPTS -->
+<script src="{% static 'dist/js/demo.js'%}"></script>
+<script src="{% static 'dist/js/pages/dashboard3.js'%}"></script>
+
 </body>
 </html>

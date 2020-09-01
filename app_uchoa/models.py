@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from datetime import date
 tipo_de_emprestimo = (
     ('di','Diário'),
@@ -58,3 +61,25 @@ class Parcela(models.Model):
 class ValeRua(models.Model):
     vale_vale = models.DecimalField(max_digits=10, decimal_places=2)
     cobrador = models.ForeignKey(Cobrador, on_delete=models.CASCADE)
+
+class Profile(models.Model):
+    COBRADOR = 1
+    DONO = 2
+    ROLE_CHOICES = (
+        (COBRADOR, 'Cobrador'),
+        (DONO, 'Dono'),
+    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    location = models.CharField(max_length=30, blank=True)
+    birthdate = models.DateField(null=True, blank=True)
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True)
+
+    def __str__(self):  # __unicode__ for Python 2
+        return self.user.username
+
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.get_or_create(user=instance)
+    
+    instance.profile.save()
