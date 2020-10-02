@@ -3,7 +3,8 @@ from django.http import HttpResponse
 
 from rest_framework import viewsets, status
 from .serializers import *
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view, renderer_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
@@ -195,6 +196,7 @@ class AreaViewSet(viewsets.ModelViewSet):
     serializer_class = AreaSerializer
 
 class ClienteViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
 
