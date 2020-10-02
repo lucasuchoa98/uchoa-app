@@ -37,24 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
-    'django.contrib.sites',
-=======
-
     'django.contrib.sites',
     
-
-
-
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
 
-
-
->>>>>>> d29a3af29eac69fde6e6fd0739b22f8414677eac
     'app_uchoa',
-
 
     'rest_framework',
 ]
