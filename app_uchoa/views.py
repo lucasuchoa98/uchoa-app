@@ -3,9 +3,10 @@ from django.http import HttpResponse
 
 from rest_framework import viewsets, status
 from .serializers import *
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view, renderer_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -195,6 +196,7 @@ class AreaViewSet(viewsets.ModelViewSet):
     serializer_class = AreaSerializer
 
 class ClienteViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
 
