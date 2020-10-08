@@ -62,6 +62,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'app.urls'
 
+SITE_ID = 1
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -147,7 +149,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
-SITE_ID = 1
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+       'localhost:8000',
+)
 
 import django_heroku
 django_heroku.settings(locals())
