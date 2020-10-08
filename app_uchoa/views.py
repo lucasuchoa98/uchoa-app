@@ -4,6 +4,10 @@ from django.http import HttpResponse
 from rest_framework import viewsets, status
 from .serializers import *
 from rest_framework.decorators import api_view, renderer_classes, permission_classes
+<<<<<<< HEAD
+=======
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
+>>>>>>> d6cede91821b744683b77049db546de39aacce76
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
@@ -196,7 +200,11 @@ class AreaViewSet(viewsets.ModelViewSet):
     serializer_class = AreaSerializer
 
 class ClienteViewSet(viewsets.ModelViewSet):
+<<<<<<< HEAD
     permission_classes = [IsAuthenticatedOrReadOnly]
+=======
+    permission_classes = [AllowAny]
+>>>>>>> d6cede91821b744683b77049db546de39aacce76
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
 
