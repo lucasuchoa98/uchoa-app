@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import date
+from django.utils import timezone
+
+
 tipo_de_emprestimo = (
     ('di','Diário'),
     ('se','Semanal'),
@@ -51,11 +54,11 @@ class Emprestimo(models.Model):
     tipo_emprestimo = models.CharField(max_length=10, choices=tipo_de_emprestimo, default='di')
     falta = models.BooleanField(default=False)
     valor_pago = models.DecimalField(max_digits=10, decimal_places=2)
-    date_start = models.DateField(default=date.today())
+    date_start = models.DateField(default=timezone.now)
 
 class Parcela(models.Model):
     emprestimo = models.ForeignKey(Emprestimo, on_delete=models.CASCADE, related_name='parcelas')
-    date = models.DateField(default=date.today())
+    date = models.DateField(default=timezone.now)
     valor_parcela = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
 class ValeRua(models.Model):
