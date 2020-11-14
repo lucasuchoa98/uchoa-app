@@ -1,9 +1,6 @@
 
 api_pathern = 'api/'
 
-urlpatterns = None
-app_name = 'app_uchoa'
-
 try:
     from django.contrib import admin
     from django.urls import path, include
