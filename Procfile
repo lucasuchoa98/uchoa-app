@@ -1,1 +1,1 @@
-web: gunicorn uchoa-app.wsgi
+web: gunicorn uchoa-app.wsgi --log-file -
